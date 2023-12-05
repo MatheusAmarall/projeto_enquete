@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from .models import Enquetes, VotacoesEnquetes
+from .utils import send_email
 
 def index(request):
     enquetes = Enquetes.objects.all()
@@ -63,10 +64,25 @@ def vote(request, id):
 
 def polls_voted(request):
     if request.user.is_authenticated:
-        enquetesVotadas = VotacoesEnquetes.objects.filter(user_id=request.user.id)
-        enquetes = []
-        for enqueteVotada in enquetesVotadas:
-            enquetes.append(enqueteVotada.enquete)
-        return render(request, 'pages/polls_voted.html', {"enquetes":enquetes})
+        enquetesVotadas = Enquetes.objects.filter(user_id=request.user.id)
+        return render(request, 'pages/polls_voted.html', {"enquetes":enquetesVotadas})
     
+    return redirect('home')
+
+def close_poll(request, id):
+    enquete = Enquetes.objects.get(id=id)
+    enquete.enquete_aberta = False
+    enquete.save()
+
+    votacoes_enquete = VotacoesEnquetes.objects.filter(enquete_id=id)
+    for votacao_enquete in votacoes_enquete:
+        send_email(f"Resultado enquete: {votacao_enquete.enquete.pergunta}",
+                    f"""<ul>
+                            <li>{ enquete.opcao_um } &mdash; <strong>{ enquete.qtd_opcao_um }</strong></li>
+                            <li>{ enquete.opcao_dois } &mdash; <strong>{ enquete.qtd_opcao_dois }</strong></li>
+                            <li>{ enquete.opcao_tres } &mdash; <strong>{ enquete.qtd_opcao_tres }</strong></li>
+                            <li>{ enquete.opcao_quatro } &mdash; <strong>{ enquete.qtd_opcao_quatro }</strong></li>
+                        </ul>""", 
+                    votacao_enquete.user.email)
+
     return redirect('home')
