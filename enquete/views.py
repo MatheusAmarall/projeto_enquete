@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import auth
-from .models import Enquetes
+from .models import Enquetes, VotacoesEnquetes
 
 def index(request):
     enquetes = Enquetes.objects.all()
@@ -23,7 +23,8 @@ def create(request):
             opcao_um=opcao_um,
             opcao_dois=opcao_dois,
             opcao_tres=opcao_tres,
-            opcao_quatro=opcao_quatro
+            opcao_quatro=opcao_quatro,
+            user_id=request.user.id
         )
 
         return redirect('home')
@@ -32,7 +33,7 @@ def create(request):
     
 def result(request, id):
     enquete = Enquetes.objects.get(id=id)
-    return render(request, 'poll/results.html', {"enquete":enquete})
+    return render(request, 'pages/resultado.html', {"enquete":enquete})
 
 def vote(request, id):
     enquete = Enquetes.objects.get(id=id)
@@ -48,9 +49,24 @@ def vote(request, id):
             enquete.qtd_opcao_tres += 1
         elif selected_option == 'option4':
             enquete.qtd_opcao_quatro += 1
+
+        VotacoesEnquetes.objects.create(
+            user_id=request.user.id,
+            enquete_id=id
+        )
     
         enquete.save()
 
         return redirect('resultado', enquete.id)
 
-    return render(request, 'resultado.html', {"enquete":enquete})
+    return render(request, 'pages/votacao.html', {"enquete":enquete})
+
+def polls_voted(request):
+    if request.user.is_authenticated:
+        enquetesVotadas = VotacoesEnquetes.objects.filter(user_id=request.user.id)
+        enquetes = []
+        for enqueteVotada in enquetesVotadas:
+            enquetes.append(enqueteVotada.enquete)
+        return render(request, 'pages/polls_voted.html', {"enquetes":enquetes})
+    
+    return redirect('home')

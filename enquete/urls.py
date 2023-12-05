@@ -7,4 +7,5 @@ urlpatterns = [
     path('criacao-enquete/', views.create, name='criacao-enquete'),
     path('votacao/<int:id>', views.vote, name='votacao'),
     path('resultado/<int:id>', views.result, name='resultado'),
+    path('enquetes-votadas/', views.polls_voted, name='enquetes-votadas'),
 ]
