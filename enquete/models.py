@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Enquete(models.Model):
+class Enquetes(models.Model):
     pergunta = models.TextField()
     opcao_um = models.CharField(max_length=30)
     opcao_dois = models.CharField(max_length=30)
@@ -22,13 +22,13 @@ class Enquete(models.Model):
         verbose_name = 'Enquete'
         verbose_name_plural = 'Enquetes'
 
-class VotacaoEnquete(models.Model):
+class VotacoesEnquetes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    enquete = models.ForeignKey(Enquete, on_delete=models.CASCADE)
+    enquete = models.ForeignKey(Enquetes, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.enquete.pergunta
     
     class Meta:
         verbose_name = 'VotacaoEnquete'
-        verbose_name_plural = 'VotacoesEnquete'
+        verbose_name_plural = 'VotacoesEnquetes'
