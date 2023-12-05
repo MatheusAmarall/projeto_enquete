@@ -12,14 +12,14 @@ def user_logout(request):
 
 def create(request):
     if request.method == 'POST':
-        new_question = request.POST.get('new_question')
+        pergunta = request.POST.get('pergunta')
         opcao_um = request.POST.get('opcao1')
         opcao_dois = request.POST.get('opcao2')
         opcao_tres = request.POST.get('opcao3')
         opcao_quatro = request.POST.get('opcao4')
 
         Enquetes.objects.create(
-            pergunta=new_question,
+            pergunta=pergunta,
             opcao_um=opcao_um,
             opcao_dois=opcao_dois,
             opcao_tres=opcao_tres,
@@ -29,9 +29,13 @@ def create(request):
         return redirect('home')
     else:
         return render(request, 'pages/criacao_enquete.html')
+    
+def result(request, id):
+    enquete = Enquetes.objects.get(id=id)
+    return render(request, 'poll/results.html', {"enquete":enquete})
 
 def vote(request, id):
-    enquete = Enquetes.objects.get(id = id)
+    enquete = Enquetes.objects.get(id=id)
 
     if request.method == 'POST':
 
@@ -44,8 +48,6 @@ def vote(request, id):
             enquete.qtd_opcao_tres += 1
         elif selected_option == 'option4':
             enquete.qtd_opcao_quatro += 1
-        else:
-            return HttpResponse(400, 'Invalid form option')
     
         enquete.save()
 
