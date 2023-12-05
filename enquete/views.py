@@ -7,3 +7,9 @@ def index(request):
 def user_logout(request):
     auth.logout(request)
     return redirect('home')
+
+def create(request):
+    if request.method == 'POST':
+        pass
+    else:
+        return render(request, 'pages/criacao_enquete.html')
