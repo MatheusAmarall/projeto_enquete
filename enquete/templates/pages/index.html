@@ -18,23 +18,25 @@
 
             <ul class="list-group">
                 {% for enquete in enquetes %}
-                    <li class="list-group-item mb-2">
-                        <div class="row">
-                            <div class="col-lg-9">
-                                <strong>{{ enquete.pergunta }}</strong>
+                    {% if enquete.enquete_aberta %}
+                        <li class="list-group-item mb-2">
+                            <div class="row">
+                                <div class="col-lg-9">
+                                    <strong>{{ enquete.pergunta }}</strong>
+                                </div>
+                                <div class="col-lg-3">
+                                    <span class="pull-right">
+                                        {% if user.is_authenticated %}
+                                        <a href="{% url 'votacao' enquete.id %}" class="btn btn-outline-primary btn-xs">Votar</a>
+                                        {% endif %}
+                                        {% if enquete.user == user %}
+                                            <a href="{% url 'fechar-enquete' enquete.id %}" class="btn btn-danger btn-xs">Fechar enquete</a>
+                                        {% endif %}
+                                    </span>
+                                </div>
                             </div>
-                            <div class="col-lg-3">
-                                <span class="pull-right">
-                                    {% if user.is_authenticated %}
-                                    <a href="{% url 'votacao' enquete.id %}" class="btn btn-outline-primary btn-xs">Votar</a>
-                                    {% endif %}
-                                    {% if enquete.user == user %}
-                                        <a href="" class="btn btn-danger btn-xs">Fechar enquete</a>
-                                    {% endif %}
-                                </span>
-                            </div>
-                        </div>
-                    </li>
+                        </li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         </div>
