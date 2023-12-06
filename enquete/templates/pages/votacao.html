@@ -1,52 +1,55 @@
 {% extends 'base.html' %}
 
 {% block main %}
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Escolha seu voto</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <h2>{{ enquete.pergunta }}</h2>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <hr />
-                            <form method="POST">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <div class="radio">
-                                        <label>
-                                            <input type="radio" name="poll" value="option1">
-                                            {{ enquete.opcao_um }}
-                                        </label> &nbsp;
-                                        <label>
-                                            <input type="radio" name="poll" value="option2">
-                                            {{ enquete.opcao_dois }}
-                                        </label> &nbsp;
-                                        <label>
-                                            <input type="radio" name="poll" value="option3">
-                                            {{ enquete.opcao_tres }}
-                                        </label> &nbsp;
-                                        <label>
-                                            <input type="radio" name="poll" value="option4">
-                                            {{ enquete.opcao_quatro }}
-                                        </label> &nbsp;
-                                    </div>
-                                </div>
-                                <hr />
-                                <button type="submit" class="btn btn-info">
-                                    Submit
-                                </button>
-                            </form>
-                        </div>
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="panel panel-default text-center">
+            <br>
+            <div class="panel-heading">
+                <h3 class="panel-title">Escolha seu voto</h3>
+                <br>
+            </div>
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2>{{ enquete.pergunta }}</h2>
                     </div>
                 </div>
+
+                <hr />
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="poll" value="option1">
+                                {{ enquete.opcao_um }}
+                            </label> &nbsp;
+                            <label>
+                                <input type="radio" name="poll" value="option2">
+                                {{ enquete.opcao_dois }}
+                            </label> &nbsp;
+                            <label>
+                                <input type="radio" name="poll" value="option3">
+                                {{ enquete.opcao_tres }}
+                            </label> &nbsp;
+                            <label>
+                                <input type="radio" name="poll" value="option4">
+                                {{ enquete.opcao_quatro }}
+                            </label> &nbsp;
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <button type="submit" class="btn btn-outline-primary btn-xs">
+                        Votar
+                    </button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

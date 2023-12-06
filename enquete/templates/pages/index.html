@@ -2,27 +2,39 @@
 
 {% block main %}
 <div class="row">
-    <div class="col-lg-8 col-lg-offset-2">
-        <div class="panel panel-default">
+    <div class="col-lg-8 mx-auto">
+        <div class="panel panel-default text-center">
+            <br>
             <div class="panel-heading">
                 <h3 class="panel-title">Enquetes disponíveis</h3>
+                <br>
             </div>
+
             {% if user.is_authenticated %}
-                <a href="{% url 'criacao-enquete' %}" class="btn btn-info btn-xs">Criar enquete</a> &nbsp;
+            <a href="{% url 'criacao-enquete' %}" class="btn btn-dark btn-outline-primary btn-xs mb-2">Criar enquete</a>
             {% endif %}
+
+            <div class="mb-4"></div>
+
             <ul class="list-group">
                 {% for enquete in enquetes %}
                     {% if enquete.enquete_aberta %}
-                        <li class="list-group-item">
-                            <strong>{{ enquete.pergunta }}</strong>
-                            <span class="pull-right">
-                                {% if user.is_authenticated %}
-                                    <a href="{% url 'votacao' enquete.id %}" class="btn btn-info btn-xs">Votar</a> &nbsp;
-                                {% endif %}
-                                {% if enquete.user == user %}
-                                    <a href="{% url 'fechar-enquete' enquete.id %}" class="btn btn-danger btn-xs">Fechar enquete</a> &nbsp;
-                                {% endif %}
-                            </span>
+                        <li class="list-group-item mb-2">
+                            <div class="row">
+                                <div class="col-lg-9">
+                                    <strong>{{ enquete.pergunta }}</strong>
+                                </div>
+                                <div class="col-lg-3">
+                                    <span class="pull-right">
+                                        {% if user.is_authenticated %}
+                                        <a href="{% url 'votacao' enquete.id %}" class="btn btn-outline-primary btn-xs">Votar</a>
+                                        {% endif %}
+                                        {% if enquete.user == user %}
+                                            <a href="{% url 'fechar-enquete' enquete.id %}" class="btn btn-danger btn-xs">Fechar enquete</a>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
                         </li>
                     {% endif %}
                 {% endfor %}
@@ -31,3 +43,5 @@
     </div>
 </div>
 {% endblock %}
+
+
