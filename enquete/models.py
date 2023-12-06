@@ -12,6 +12,7 @@ class Enquetes(models.Model):
     qtd_opcao_tres = models.IntegerField(default=0)
     qtd_opcao_quatro = models.IntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    enquete_aberta = models.BooleanField(default=True)
 
     def total(self):
         return self.qtd_opcao_um + self.qtd_opcao_dois + self.qtd_opcao_tres + self.qtd_opcao_quatro
