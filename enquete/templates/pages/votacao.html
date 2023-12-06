@@ -44,9 +44,14 @@
 
                     <hr />
 
-                    <button type="submit" class="btn btn-outline-primary btn-xs">
+                    <button type="submit" class="btn btn-outline-primary btn-xs mb-3">
                         Votar
                     </button>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <h5>{{message}}</h5>
+                        {% endfor %}
+                    {% endif %}
                 </form>
             </div>
         </div>

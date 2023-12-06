@@ -2,15 +2,31 @@ from django.shortcuts import render, redirect
 from django.contrib import auth
 from .models import Enquetes, VotacoesEnquetes
 from .utils import send_email
+from django.contrib import messages
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 def index(request):
-    enquetes = Enquetes.objects.all()
+    todas_enquetes = Enquetes.objects.order_by('-id')
+    enquetes = []
+
+    for enquete in todas_enquetes:
+        if(enquete.user.id != request.user.id):
+            enquetes.append(enquete)
+
     return render(request, 'pages/index.html', {"enquetes":enquetes})
+
+@login_required
+def my_polls(request):
+    enquetes = Enquetes.objects.filter(user_id=request.user.id)
+
+    return render(request, 'pages/my_polls.html', {"enquetes":enquetes})
 
 def user_logout(request):
     auth.logout(request)
     return redirect('home')
 
+@login_required
 def create(request):
     if request.method == 'POST':
         pergunta = request.POST.get('pergunta')
@@ -28,19 +44,27 @@ def create(request):
             user_id=request.user.id
         )
 
-        return redirect('home')
+        return redirect('minhas-enquetes')
     else:
         return render(request, 'pages/criacao_enquete.html')
-    
+
+@login_required
 def result(request, id):
     enquete = Enquetes.objects.get(id=id)
     return render(request, 'pages/resultado.html', {"enquete":enquete})
 
+@login_required
 def vote(request, id):
     enquete = Enquetes.objects.get(id=id)
 
     if request.method == 'POST':
+        enquetesVotadas = VotacoesEnquetes.objects.filter(user_id=request.user.id, enquete_id=id)
 
+        if len(enquetesVotadas) > 0:
+            messages.warning(request, 'Você já votou nessa enquete.')
+
+            return redirect(reverse('votacao', args=[enquete.id]))
+        
         selected_option = request.POST['poll']
         if selected_option == 'option1':
             enquete.qtd_opcao_um += 1
@@ -62,27 +86,29 @@ def vote(request, id):
 
     return render(request, 'pages/votacao.html', {"enquete":enquete})
 
+@login_required
 def polls_voted(request):
-    if request.user.is_authenticated:
-        enquetesVotadas = Enquetes.objects.filter(user_id=request.user.id)
-        return render(request, 'pages/polls_voted.html', {"enquetes":enquetesVotadas})
-    
-    return redirect('home')
+    enquetesVotadas = VotacoesEnquetes.objects.filter(user_id=request.user.id)
+    enquetes = []
+    for enqueteVotada in enquetesVotadas:
+        enquetes.append(enqueteVotada.enquete)
+    return render(request, 'pages/polls_voted.html', {"enquetes":enquetes})
 
+@login_required
 def close_poll(request, id):
     enquete = Enquetes.objects.get(id=id)
     enquete.enquete_aberta = False
     enquete.save()
 
     votacoes_enquete = VotacoesEnquetes.objects.filter(enquete_id=id)
-    for votacao_enquete in votacoes_enquete:
-        send_email(f"Resultado enquete: {votacao_enquete.enquete.pergunta}",
-                    f"""<ul>
-                            <li>{ enquete.opcao_um } &mdash; <strong>{ enquete.qtd_opcao_um }</strong></li>
-                            <li>{ enquete.opcao_dois } &mdash; <strong>{ enquete.qtd_opcao_dois }</strong></li>
-                            <li>{ enquete.opcao_tres } &mdash; <strong>{ enquete.qtd_opcao_tres }</strong></li>
-                            <li>{ enquete.opcao_quatro } &mdash; <strong>{ enquete.qtd_opcao_quatro }</strong></li>
-                        </ul>""", 
-                    votacao_enquete.user.email)
+    # for votacao_enquete in votacoes_enquete:
+    #     send_email(f"Resultado enquete: {votacao_enquete.enquete.pergunta}",
+    #                 f"""<ul>
+    #                         <li>{ enquete.opcao_um } &mdash; <strong>{ enquete.qtd_opcao_um }</strong></li>
+    #                         <li>{ enquete.opcao_dois } &mdash; <strong>{ enquete.qtd_opcao_dois }</strong></li>
+    #                         <li>{ enquete.opcao_tres } &mdash; <strong>{ enquete.qtd_opcao_tres }</strong></li>
+    #                         <li>{ enquete.opcao_quatro } &mdash; <strong>{ enquete.qtd_opcao_quatro }</strong></li>
+    #                     </ul>""", 
+    #                 votacao_enquete.user.email)
 
-    return redirect('home')
+    return redirect('minhas-enquetes')
