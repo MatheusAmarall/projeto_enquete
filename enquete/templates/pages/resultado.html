@@ -1,29 +1,31 @@
 {% extends 'base.html' %}
 
 {% block main %}
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Resultado enquete</h3>
-                </div>
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="panel panel-default text-center">
+            <br>
+            <div class="panel-heading">
+                <h3 class="panel-title">Resultado enquete</h3>
+                <br>
+            </div>
 
-                <div class="panel-body">
-                    <h3>{{ enquete.pergunta }}</h3>
-                </div>
+            <div class="panel-body">
+                <h3>{{ enquete.pergunta }}</h3>
+            </div>
 
-                <ul class="list-group">
-                    <li class="list-group-item">{{ enquete.opcao_um }} &mdash; <strong>{{ enquete.qtd_opcao_um }}</strong></li>
-                    <li class="list-group-item">{{ enquete.opcao_dois }} &mdash; <strong>{{ enquete.qtd_opcao_dois }}</strong></li>
-                    <li class="list-group-item">{{ enquete.opcao_tres }} &mdash; <strong>{{ enquete.qtd_opcao_tres }}</strong></li>
-                    <li class="list-group-item">{{ enquete.opcao_quatro }} &mdash; <strong>{{ enquete.qtd_opcao_quatro }}</strong></li>
-                </ul>
+            <ul class="list-group">
+                <li class="list-group-item">{{ enquete.opcao_um }} &mdash; <strong>{{ enquete.qtd_opcao_um }}</strong></li>
+                <li class="list-group-item">{{ enquete.opcao_dois }} &mdash; <strong>{{ enquete.qtd_opcao_dois }}</strong></li>
+                <li class="list-group-item">{{ enquete.opcao_tres }} &mdash; <strong>{{ enquete.qtd_opcao_tres }}</strong></li>
+                <li class="list-group-item">{{ enquete.opcao_quatro }} &mdash; <strong>{{ enquete.qtd_opcao_quatro }}</strong></li>
+            </ul>
 
-                <div class="panel-footer">
-                    Total &mdash; <strong>{{ enquete.total }}</strong>
-                </div>
-
+            <div class="panel-footer">
+                Total &mdash; <strong>{{ enquete.total }}</strong>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
+
