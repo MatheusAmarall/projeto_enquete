@@ -11,7 +11,7 @@ def send_email(title, content, email):
     msg['From'] = EMAIL
     msg['To'] = email
 
-    msg.set_content(content)
+    msg.add_alternative(content, subtype='html')
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
         smtp.login(EMAIL, PASSWORD)
