@@ -101,14 +101,15 @@ def close_poll(request, id):
     enquete.save()
 
     votacoes_enquete = VotacoesEnquetes.objects.filter(enquete_id=id)
-    # for votacao_enquete in votacoes_enquete:
-    #     send_email(f"Resultado enquete: {votacao_enquete.enquete.pergunta}",
-    #                 f"""<ul>
-    #                         <li>{ enquete.opcao_um } &mdash; <strong>{ enquete.qtd_opcao_um }</strong></li>
-    #                         <li>{ enquete.opcao_dois } &mdash; <strong>{ enquete.qtd_opcao_dois }</strong></li>
-    #                         <li>{ enquete.opcao_tres } &mdash; <strong>{ enquete.qtd_opcao_tres }</strong></li>
-    #                         <li>{ enquete.opcao_quatro } &mdash; <strong>{ enquete.qtd_opcao_quatro }</strong></li>
-    #                     </ul>""", 
-    #                 votacao_enquete.user.email)
+    for votacao_enquete in votacoes_enquete:
+        enquete = votacao_enquete.enquete
+        send_email(f"Resultado enquete: {enquete.pergunta}",
+                    f"""<ul>
+                            <li>{enquete.opcao_um}: <strong>{enquete.qtd_opcao_um}</strong></li>
+                            <li>{enquete.opcao_dois}: <strong>{enquete.qtd_opcao_dois}</strong></li>
+                            <li>{enquete.opcao_tres}: <strong>{enquete.qtd_opcao_tres}</strong></li>
+                            <li>{enquete.opcao_quatro}: <strong>{enquete.qtd_opcao_quatro}</strong></li>
+                        </ul>""",
+                    votacao_enquete.user.email)
 
     return redirect('minhas-enquetes')
